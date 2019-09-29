@@ -153,7 +153,7 @@ namespace SharpDoor {
 
 			Console.WriteLine("\nOriginal File Hash : " + GetMd5Hash(originalFile));
 			Console.WriteLine("Patched File Hash : " + GetMd5Hash(patchedFile));
-			Console.WriteLine("\n[*] " + patchedFile + " was patched sucessfully\n");
+			Console.WriteLine("\n[*] " + patchedFile + " was patched successfully\n");
 		}
 	}
 }
