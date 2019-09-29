@@ -32,7 +32,7 @@ Allow Multiple RDP (Remote Desktop) Sessions By Patching termsrv.dll File
 Original File Hash : 24ff1f89f2ec3f5561c34810c8328726
 Patched File Hash : 28b1bd1254f7a90dd3f05db08deef67b
 
-[*] C:\Windows\System32\termsrv.dll was patched sucessfully
+[*] C:\Windows\System32\termsrv.dll was patched successfully
 
 [*] Start termservice
 [*] Attempting To Change Registry Key fSingleSessionPerUser
