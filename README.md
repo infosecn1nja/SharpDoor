@@ -30,11 +30,12 @@ Allow Multiple RDP (Remote Desktop) Sessions By Patching termsrv.dll File
 [*] Attempting to patch termsrv.dll
 
 Original File Hash : 24ff1f89f2ec3f5561c34810c8328726
-Patched File Hash : 28b1bd1254f7a90dd3f05db08deef67b
+Patched File Hash : 4cec28b4c00002245dffc8346be0cc11
 
-[*] C:\Windows\System32\termsrv.dll was patched successfully
+[*] C:\Users\Public\termsrv.patch.dll was patched successfully
 
+[*] Setting Registry Terminal Server\fSingleSessionPerUser to 0
+[*] Setting Registry Terminal Server\TSAppAllowList\fDisabledAllowList to 1
 [*] Start termservice
-[*] Attempting To Change Registry Key fSingleSessionPerUser
 [*] Done
 ```
