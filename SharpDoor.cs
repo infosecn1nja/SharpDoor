@@ -55,7 +55,7 @@ namespace SharpDoor {
 				Console.WriteLine("[*] Attempting To Change Registry Key fSingleSessionPerUser For Enabling Single Session Per User");
 
 				RegistryKey key = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\Terminal Server");
-				key.SetValue("fSingleSessionPerUser", "0");
+				key.SetValue("fSingleSessionPerUser", 0, RegistryValueKind.DWord);
 
 				Console.WriteLine("[*] Done");
 			}
